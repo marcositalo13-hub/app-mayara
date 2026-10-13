@@ -5,6 +5,8 @@ Os arquivos são executados **manualmente** no SQL Editor do Supabase, nesta ord
 1. `migrations/0001_schema.sql`: cria tabelas, RLS, funções e views. Rode uma vez só.
 2. `seed/0001_cycle1.sql`: insere o conteúdo do **Ciclo 1**. É de uso único: se o "Ciclo 1" já existir, o script para com erro e não altera nada.
 3. `checks/0001_verify.sql`: apenas leitura. Rode cada consulta e compare com o esperado.
+4. `seed/0002_exercise_media.sql`: instruções, cuidados e caminhos das imagens dos exercícios (as imagens ficam em `public/exercises/`). Também troca o terra sumô por agachamento sumô com halter. Pode ser rodado de novo sem problema.
+5. `checks/0002_verify.sql`: apenas leitura, uma linha por exercício.
 
 ## Depois de criar as contas
 
