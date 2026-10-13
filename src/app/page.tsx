@@ -1,58 +1,46 @@
 import { Suspense } from "react";
-import Link from "next/link";
-import { Heart } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getCurrentMember } from "@/lib/auth";
-import { signOut } from "./actions";
+import { TodayEmpty } from "@/components/today/today-empty";
+import { TodayHeader } from "@/components/today/today-header";
+import { TodaySkeleton } from "@/components/today/today-skeleton";
+import { TodayView } from "@/components/today/today-view";
+import { getTodayData } from "@/lib/data/today";
+import { formatDayMonth, formatLongDate } from "@/lib/date";
+import { setMealDone, setWater, signOut } from "./actions";
 
-async function MemberCard() {
-  const member = await getCurrentMember({ required: true });
+async function TodayContent() {
+  const data = await getTodayData();
+  // Dates are formatted on the server so the client renders the exact same text.
+  const dateLabel = formatLongDate(data.today);
+
+  if (data.status === "no_active_week") {
+    return (
+      <div className="flex flex-col gap-6">
+        <TodayHeader
+          displayName={data.member.displayName}
+          dateLabel={dateLabel}
+          weekLabel={null}
+          isAdmin={data.member.role === "admin"}
+          signOut={signOut}
+        />
+        <TodayEmpty
+          lastCycleEnd={data.lastCycleEnd ? formatDayMonth(data.lastCycleEnd) : null}
+          startsOn={data.startsOn ? formatDayMonth(data.startsOn) : null}
+        />
+      </div>
+    );
+  }
 
   return (
-    <>
-      <CardHeader className="justify-items-center gap-2 text-center">
-        <Heart className="size-10 fill-primary-soft text-primary" aria-hidden />
-        <CardTitle className="text-3xl">Olá, {member.displayName}</CardTitle>
-        {member.role === "admin" && (
-          <p className="text-text-muted">Você está como administrador</p>
-        )}
-      </CardHeader>
-      <CardContent className="flex flex-col gap-3">
-        <Link
-          href="/estilo"
-          className={buttonVariants({ variant: "secondary", className: "w-full" })}
-        >
-          Ver estilo
-        </Link>
-        <form action={signOut}>
-          <Button type="submit" variant="ghost" className="w-full">
-            Sair
-          </Button>
-        </form>
-      </CardContent>
-    </>
-  );
-}
-
-function MemberCardSkeleton() {
-  return (
-    <CardHeader className="items-center justify-items-center gap-3" aria-busy="true">
-      <div className="size-10 rounded-full bg-primary-soft" />
-      <div className="h-8 w-48 rounded-full bg-surface-alt" />
-      <div className="h-12 w-full rounded-full bg-surface-alt" />
-    </CardHeader>
+    <TodayView data={data} dateLabel={dateLabel} actions={{ setMealDone, setWater, signOut }} />
   );
 }
 
 export default function Home() {
   return (
-    <main className="flex flex-1 items-center justify-center px-4 py-6">
-      <Card className="w-full max-w-sm">
-        <Suspense fallback={<MemberCardSkeleton />}>
-          <MemberCard />
-        </Suspense>
-      </Card>
+    <main className="mx-auto flex w-full max-w-[480px] flex-1 flex-col px-4 pt-4 pb-10">
+      <Suspense fallback={<TodaySkeleton />}>
+        <TodayContent />
+      </Suspense>
     </main>
   );
 }

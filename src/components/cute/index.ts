@@ -1,4 +1,4 @@
 export { HeartProgress } from "./heart-progress";
-export { CheckItem } from "./check-item";
-export { WaterTracker } from "./water-tracker";
+export { CheckButton, CheckItem } from "./check-item";
+export { WaterTracker, CUP_ML, formatLiters } from "./water-tracker";
 export { CelebrationBurst } from "./celebration-burst";

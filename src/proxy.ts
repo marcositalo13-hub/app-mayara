@@ -41,8 +41,12 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isLogin = pathname === LOGIN_PATH;
 
+  // Fixture previews (no data access) are reachable without a session in dev only.
+  const isDevPreview =
+    process.env.NODE_ENV === "development" && pathname.startsWith("/dev/");
+
   let redirectTo: string | null = null;
-  if (!user && !isLogin) redirectTo = LOGIN_PATH;
+  if (!user && !isLogin && !isDevPreview) redirectTo = LOGIN_PATH;
   else if (user && isLogin) redirectTo = "/";
 
   if (redirectTo) {
