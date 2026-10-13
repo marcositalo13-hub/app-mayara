@@ -255,6 +255,16 @@
   overflow: hidden;
 }
 
+/* Exercise illustration: second frame fades in/out (each frame shows ~1.4 s, fade 140 ms). */
+@keyframes illus-swap {
+  0%, 45% { opacity: 0; }
+  50%, 95% { opacity: 1; }
+  100% { opacity: 0; }
+}
+.illus-swap {
+  animation: illus-swap 2800ms linear infinite;
+}
+
 /* Pressable feedback. */
 .pressable {
   transition: transform 120ms var(--ease-out);
@@ -272,5 +282,10 @@
     transition-duration: 0.01ms !important;
     transition-delay: 0ms !important;
     scroll-behavior: auto !important;
+  }
+  /* Static first frame instead of the movement loop. */
+  .illus-swap {
+    animation: none !important;
+    opacity: 0;
   }
 }

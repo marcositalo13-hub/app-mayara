@@ -5,7 +5,7 @@ import { TodaySkeleton } from "@/components/today/today-skeleton";
 import { TodayView } from "@/components/today/today-view";
 import { getTodayData } from "@/lib/data/today";
 import { formatDayMonth, formatLongDate } from "@/lib/date";
-import { setMealDone, setWater, signOut } from "./actions";
+import { setMealDone, setWater, signOut } from "@/app/actions";
 
 async function TodayContent() {
   const data = await getTodayData();

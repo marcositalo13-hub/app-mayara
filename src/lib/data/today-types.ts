@@ -1,4 +1,5 @@
 // Shape of the "Hoje" screen data. Client-safe (types only).
+import type { CardioWeek } from "./workout-types";
 
 export type TodayMember = {
   displayName: string;
@@ -61,6 +62,9 @@ export type TodayData =
       mealLogs: TodayMealLog[];
       waterMl: number;
       nextWorkout: TodayNextWorkout | null;
+      /** Unfinished workout session, if any (any date). */
+      openSessionId: string | null;
+      cardio: CardioWeek | null;
       swapGroups: TodaySwapGroup[];
     }
   | {

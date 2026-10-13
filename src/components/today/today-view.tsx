@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useOptimistic, useRef, useState, useTransition } from "react";
+import Link from "next/link";
 import { Dumbbell } from "lucide-react";
 import { toast } from "sonner";
 import { CelebrationBurst, CUP_ML, formatLiters, HeartProgress, WaterTracker } from "@/components/cute";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { CardioProgress } from "@/components/workout/cardio-progress";
 import type { TodayActions, TodayData, TodayMeal } from "@/lib/data/today-types";
 import { MealCard } from "./meal-card";
 import { SwapsSheet } from "./swaps-sheet";
@@ -248,25 +251,59 @@ export function TodayView({ data, dateLabel, actions }: TodayViewProps) {
         </Card>
       </section>
 
-      {data.nextWorkout && (
-        <section aria-label="Próximo treino">
+      {(data.nextWorkout || data.openSessionId) && (
+        <section aria-label="Treino">
           <Card>
-            <CardContent className="flex items-center gap-4">
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
-                <Dumbbell aria-hidden className="size-6" />
-              </span>
-              <div className="flex min-w-0 flex-col">
-                <p className="font-extrabold [overflow-wrap:anywhere]">
-                  Treino da vez: {data.nextWorkout.code} — {data.nextWorkout.name}
-                </p>
-                <p className="text-text-muted">
-                  {data.nextWorkout.exercise_count === 1
-                    ? "1 exercício"
-                    : `${data.nextWorkout.exercise_count} exercícios`}
-                </p>
+            <CardContent className="flex flex-col gap-4">
+              <div className="flex items-center gap-4">
+                <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+                  <Dumbbell aria-hidden className="size-6" />
+                </span>
+                <div className="flex min-w-0 flex-col">
+                  {data.openSessionId ? (
+                    <p className="font-extrabold">Você tem um treino em andamento</p>
+                  ) : (
+                    data.nextWorkout && (
+                      <>
+                        <p className="font-extrabold [overflow-wrap:anywhere]">
+                          Treino da vez: {data.nextWorkout.code} — {data.nextWorkout.name}
+                        </p>
+                        <p className="text-text-muted">
+                          {data.nextWorkout.exercise_count === 1
+                            ? "1 exercício"
+                            : `${data.nextWorkout.exercise_count} exercícios`}
+                        </p>
+                      </>
+                    )
+                  )}
+                </div>
               </div>
+              <Link
+                href={data.openSessionId ? `/treino/${data.openSessionId}` : "/treino"}
+                className={buttonVariants({ className: "w-full" })}
+              >
+                {data.openSessionId ? "Continuar treino" : "Começar treino"}
+              </Link>
             </CardContent>
           </Card>
+        </section>
+      )}
+
+      {data.cardio && (
+        <section aria-labelledby="cardio-title">
+          <Link
+            href="/treino"
+            className="pressable block rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          >
+            <Card>
+              <CardContent className="flex flex-col gap-3">
+                <h2 id="cardio-title" className="text-xl">
+                  Cardio da semana
+                </h2>
+                <CardioProgress week={data.cardio} />
+              </CardContent>
+            </Card>
+          </Link>
         </section>
       )}
     </div>

@@ -7,6 +7,8 @@ Os arquivos são executados **manualmente** no SQL Editor do Supabase, nesta ord
 3. `checks/0001_verify.sql`: apenas leitura. Rode cada consulta e compare com o esperado.
 4. `seed/0002_exercise_media.sql`: instruções, cuidados e caminhos das imagens dos exercícios (as imagens ficam em `public/exercises/`). Também troca o terra sumô por agachamento sumô com halter. Pode ser rodado de novo sem problema.
 5. `checks/0002_verify.sql`: apenas leitura, uma linha por exercício.
+6. `migrations/0003_workout_logging.sql`: uma sessão de treino aberta por vez e o incremento de carga de cada exercício. Rode uma vez só.
+7. `checks/0003_verify.sql`: apenas leitura (esperado: 21 exercícios com incremento e o índice criado).
 
 ## Depois de criar as contas
 

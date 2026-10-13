@@ -8,11 +8,13 @@ type CheckButtonProps = {
   onCheckedChange: (checked: boolean) => void;
   /** Accessible name, e.g. "Marcar Almoço como feito". */
   label: string;
+  /** Shown inside the circle while unchecked (e.g. a set number). */
+  uncheckedContent?: React.ReactNode;
   className?: string;
 };
 
 /** The round 48px check on its own (controlled). Pops only when the user checks. */
-export function CheckButton({ checked, onCheckedChange, label, className }: CheckButtonProps) {
+export function CheckButton({ checked, onCheckedChange, label, uncheckedContent, className }: CheckButtonProps) {
   // Only a check the user just made animates; unchecking and initial/server state are instant.
   const [animate, setAnimate] = useState(false);
 
@@ -31,12 +33,20 @@ export function CheckButton({ checked, onCheckedChange, label, className }: Chec
         className,
       )}
     >
-      <CheckCircle checked={checked} animate={animate} />
+      <CheckCircle checked={checked} animate={animate} uncheckedContent={uncheckedContent} />
     </button>
   );
 }
 
-function CheckCircle({ checked, animate }: { checked: boolean; animate: boolean }) {
+function CheckCircle({
+  checked,
+  animate,
+  uncheckedContent,
+}: {
+  checked: boolean;
+  animate: boolean;
+  uncheckedContent?: React.ReactNode;
+}) {
   return (
     <span
       aria-hidden
@@ -47,6 +57,9 @@ function CheckCircle({ checked, animate }: { checked: boolean; animate: boolean 
         checked ? "border-primary bg-primary" : "border-text-muted/60 bg-surface",
       )}
     >
+      {!checked && uncheckedContent ? (
+        <span className="font-extrabold text-text-muted tabular-nums">{uncheckedContent}</span>
+      ) : (
       <svg viewBox="0 0 24 24" className="size-6" fill="none">
         <path
           d="M5 12.5l4.5 4.5L19 7.5"
@@ -56,6 +69,7 @@ function CheckCircle({ checked, animate }: { checked: boolean; animate: boolean 
           strokeLinejoin="round"
         />
       </svg>
+      )}
     </span>
   );
 }

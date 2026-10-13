@@ -15,6 +15,7 @@ import type {
   WorkoutRow,
 } from "@/lib/types/db";
 import type { TodayData } from "./today-types";
+import { loadCardioWeek, loadOpenSessionId } from "./workout";
 
 // One nested select for all plan content of the active cycle.
 const CYCLE_SELECT = `
@@ -65,7 +66,7 @@ export async function getTodayData(): Promise<TodayData> {
   const supabase = await createClient();
   const who = { displayName: member.displayName, role: member.role };
 
-  const [cycleRes, logsRes, waterRes, nextRes] = await Promise.all([
+  const [cycleRes, logsRes, waterRes, nextRes, openSessionId, cardio] = await Promise.all([
     supabase.from("plan_cycles").select(CYCLE_SELECT).eq("is_active", true).maybeSingle(),
     // Explicit user filter: an admin's RLS can read every user's logs.
     supabase
@@ -80,6 +81,8 @@ export async function getTodayData(): Promise<TodayData> {
       .eq("log_date", today)
       .maybeSingle(),
     supabase.from("v_next_workout").select("id").maybeSingle(),
+    loadOpenSessionId(supabase, member.userId),
+    loadCardioWeek(supabase, member.userId, today),
   ]);
 
   if (cycleRes.error || logsRes.error || waterRes.error || nextRes.error) {
@@ -175,6 +178,8 @@ export async function getTodayData(): Promise<TodayData> {
           exercise_count: next.workout_exercises?.[0]?.count ?? 0,
         }
       : null,
+    openSessionId,
+    cardio,
     swapGroups: (cycle.swap_groups ?? [])
       .slice()
       .sort(bySort)

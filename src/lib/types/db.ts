@@ -120,3 +120,64 @@ export type WaterLogRow = {
 
 /** v_next_workout has the same columns as workouts. */
 export type NextWorkoutViewRow = WorkoutRow;
+
+export type RepsUnit = "reps" | "s" | "passos";
+
+export type ExerciseRow = {
+  id: Uuid;
+  slug: string;
+  name_pt: string;
+  instructions_pt: string[] | null;
+  caution_pt: string | null;
+  source_ref: string | null;
+  image_paths: string[];
+  /** Added in migrations/0003_workout_logging.sql. 0 = bodyweight/time. */
+  increment_kg: number;
+  created_at: string;
+};
+
+export type WorkoutExerciseRow = {
+  id: Uuid;
+  workout_id: Uuid;
+  exercise_id: Uuid;
+  sort: number;
+  sets: number;
+  reps_min: number;
+  reps_max: number;
+  reps_unit: RepsUnit;
+  per_side: boolean;
+  rest_s: number;
+  note: string | null;
+  created_at: string;
+};
+
+export type WorkoutSessionRow = {
+  id: Uuid;
+  user_id: Uuid;
+  workout_id: Uuid;
+  performed_on: IsoDate;
+  started_at: string;
+  finished_at: string | null;
+  notes: string | null;
+  created_at: string;
+};
+
+export type SetLogRow = {
+  id: Uuid;
+  session_id: Uuid;
+  workout_exercise_id: Uuid;
+  set_no: number;
+  load_kg: number;
+  reps: number;
+  created_at: string;
+};
+
+export type CardioLogRow = {
+  id: Uuid;
+  user_id: Uuid;
+  performed_on: IsoDate;
+  minutes: number;
+  rpe: number;
+  modality: string;
+  created_at: string;
+};
