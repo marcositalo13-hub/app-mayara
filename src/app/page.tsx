@@ -1,13 +1,28 @@
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import Link from "next/link";
+import { Heart } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function Home() {
   return (
-    <main className="flex flex-1 items-center justify-center p-4">
+    <main className="flex flex-1 items-center justify-center px-4 py-6">
       <Card className="w-full max-w-sm text-center">
-        <CardHeader>
-          <CardTitle className="text-2xl font-semibold">Plano Mayara</CardTitle>
-          <CardDescription className="text-base">Em construção</CardDescription>
+        <CardHeader className="justify-items-center gap-2">
+          <Heart className="size-10 fill-primary-soft text-primary" aria-hidden />
+          <CardTitle className="text-3xl">Plano Mayara</CardTitle>
+          <CardDescription>Em construção</CardDescription>
         </CardHeader>
+        <CardContent>
+          <Link href="/estilo" className={buttonVariants({ className: "w-full" })}>
+            Ver estilo
+          </Link>
+        </CardContent>
       </Card>
     </main>
   );

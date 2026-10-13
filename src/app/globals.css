@@ -2,10 +2,23 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+/*
+ * Dark mode: follows the OS by default; an explicit .dark / .light class on
+ * <html> overrides it (used by the /estilo preview toggle, not persisted).
+ */
+@custom-variant dark {
+  &:where(.dark, .dark *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not(.light), :root:not(.light) *) {
+      @slot;
+    }
+  }
+}
 
 @theme inline {
-  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-nunito), ui-rounded, system-ui, sans-serif;
   --font-heading: var(--font-sans);
 
   --color-background: var(--background);
@@ -14,7 +27,10 @@
   --color-surface-alt: var(--surface-alt);
   --color-text: var(--text);
   --color-text-muted: var(--text-muted);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent-soft: var(--accent-soft);
   --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
   --color-card: var(--surface);
@@ -23,8 +39,8 @@
   --color-popover-foreground: var(--text);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--surface-alt);
-  --color-secondary-foreground: var(--text);
+  --color-secondary: var(--accent-soft);
+  --color-secondary-foreground: var(--accent);
   --color-muted: var(--surface-alt);
   --color-muted-foreground: var(--text-muted);
   --color-accent: var(--accent);
@@ -34,47 +50,89 @@
   --color-input: var(--border);
   --color-ring: var(--primary);
 
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-2xl: 24px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-xl: 24px;
+  --radius-2xl: 28px;
+
+  --shadow-soft: var(--shadow-soft);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 :root {
-  --background: #F6F8F7;
+  --background: #FFF7F9;
   --surface: #FFFFFF;
-  --surface-alt: #EDF2F0;
-  --text: #1E2A27;
-  --text-muted: #5B6B66;
-  --border: #D8E1DD;
-  --primary: #2F5D50;
+  --surface-alt: #FCEEF2;
+  --text: #3A2530;
+  --text-muted: #7A5D69;
+  --border: #F1D9E1;
+  --primary: #B9466E;
   --primary-foreground: #FFFFFF;
-  --accent: #B84A6E;
+  --primary-soft: #F9D7E3;
+  /* accent/success/warning darkened from the brief to reach >= 4.5:1 */
+  --accent: #7054B2;
   --accent-foreground: #FFFFFF;
-  --success: #2F7D4F;
-  --warning: #B7791F;
+  --accent-soft: #E9E1F7;
+  --success: #2B745B;
+  --success-soft: #D9F0E6;
+  --warning: #9E6411;
   --danger: #B23B3B;
 
-  --radius-sm: 8px;
-  --radius: 12px;
-  --radius-lg: 16px;
+  --radius-sm: 12px;
+  --radius: 18px;
+  --radius-lg: 24px;
+
+  --shadow-soft: 0 6px 20px rgb(185 70 110 / 0.10);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
+  color-scheme: light;
 }
 
 .dark {
-  --background: #121816;
-  --surface: #1A2220;
-  --surface-alt: #222C29;
-  --text: #E6EDEA;
-  --text-muted: #9AABA5;
-  --border: #2E3A36;
-  --primary: #6FAF9C;
-  --primary-foreground: #0E1513;
-  --accent: #E07FA2;
-  --accent-foreground: #0E1513;
-  --success: #5FBF86;
-  --warning: #E0A84A;
-  --danger: #EC8080;
+  --background: #1D1418;
+  --surface: #271B21;
+  --surface-alt: #31232A;
+  --text: #F6E9EE;
+  --text-muted: #C6A9B5;
+  --border: #3E2C34;
+  --primary: #F08DB0;
+  --primary-foreground: #2A1119;
+  --primary-soft: #4A2533;
+  --accent: #B9A3EE;
+  --accent-foreground: #1D1418;
+  --accent-soft: #2F2645;
+  --success: #7FD1B0;
+  --success-soft: #1F3A30;
+  --warning: #E3B25A;
+  --danger: #F08A8A;
+  --shadow-soft: 0 6px 20px rgb(0 0 0 / 0.35);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: #1D1418;
+    --surface: #271B21;
+    --surface-alt: #31232A;
+    --text: #F6E9EE;
+    --text-muted: #C6A9B5;
+    --border: #3E2C34;
+    --primary: #F08DB0;
+    --primary-foreground: #2A1119;
+    --primary-soft: #4A2533;
+    --accent: #B9A3EE;
+    --accent-foreground: #1D1418;
+    --accent-soft: #2F2645;
+    --success: #7FD1B0;
+    --success-soft: #1F3A30;
+    --warning: #E3B25A;
+    --danger: #F08A8A;
+    --shadow-soft: 0 6px 20px rgb(0 0 0 / 0.35);
+    color-scheme: dark;
+  }
 }
 
 @layer base {
@@ -84,11 +142,105 @@
   html {
     @apply font-sans;
     font-size: 16px;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior: none;
   }
   body {
     @apply bg-background text-foreground;
     font-size: 1rem;
+    line-height: 1.5;
+    padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px)
+      env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
   }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+  button,
+  a,
+  [role="button"],
+  label {
+    touch-action: manipulation;
+  }
+  button,
+  [role="button"] {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+/* ---------- Cute components (transform/opacity only) ---------- */
+
+/* CheckItem: pop on check only; unchecking is instant. */
+@keyframes check-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+.check-circle[data-checked="true"][data-animate="true"] {
+  animation: check-pop 220ms var(--ease-out);
+}
+.check-mark {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+}
+.check-circle[data-checked="true"] .check-mark {
+  stroke-dashoffset: 0;
+}
+.check-circle[data-checked="true"][data-animate="true"] .check-mark {
+  transition: stroke-dashoffset 200ms var(--ease-out) 40ms;
+}
+
+/* WaterTracker cup fill: scaleY from the bottom. */
+.cup-water {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transform: scaleY(0);
+  transition: transform 200ms var(--ease-out);
+}
+.cup[data-filled="true"] .cup-water {
+  transform: scaleY(1);
+}
+
+/* HeartProgress fill: translateY of a full-height rect clipped by the heart. */
+.heart-fill {
+  transition: transform 300ms ease-out;
+}
+
+/* CelebrationBurst: the one showpiece (~700ms). */
+@keyframes burst-heart {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(0) scale(0.6);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--angle)) translateY(calc(var(--distance) * -1)) scale(1);
+  }
+}
+.burst-heart {
+  animation: burst-heart 700ms var(--ease-out) forwards;
+}
+
+/* Pressable feedback. */
+.pressable {
+  transition: transform 120ms var(--ease-out);
+}
+.pressable:active {
+  transform: scale(0.97);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -98,6 +250,7 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
     scroll-behavior: auto !important;
   }
 }
