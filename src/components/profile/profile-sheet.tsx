@@ -16,7 +16,7 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { AvatarError, processAvatar } from "@/lib/avatar/process-image";
-import { type AvatarUploader, storageUploader } from "@/lib/avatar/upload";
+import { type AvatarUploader, describeUploadError, storageUploader } from "@/lib/avatar/upload";
 import type { ActionResult } from "@/lib/data/today-types";
 import { THEME_LABELS, THEMES } from "@/lib/theme";
 import { cn } from "@/lib/utils";
@@ -109,7 +109,7 @@ export function ProfileSheet({
     const uploaded = await uploader.upload(userId, processed);
     if (!uploaded.ok) {
       setPreview(null);
-      setError("Não foi possível enviar a foto. Verifique a conexão e tente de novo.");
+      setError(describeUploadError(uploaded.error));
       setBusy(null);
       return;
     }
