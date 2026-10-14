@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Dumbbell, GlassWater, Utensils } from "lucide-react";
+import { Dumbbell, GlassWater, Target, Utensils } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
   { href: "/", label: "Dieta", icon: Utensils, match: (p: string) => p === "/" },
   { href: "/agua", label: "Água", icon: GlassWater, match: (p: string) => p.startsWith("/agua") },
   { href: "/treino", label: "Treino", icon: Dumbbell, match: (p: string) => p.startsWith("/treino") },
+  { href: "/metas", label: "Metas", icon: Target, match: (p: string) => p.startsWith("/metas") },
 ] as const;
 
 /** Bar content is h-16; the (app) layout reserves pb-16 for it. */
@@ -18,12 +19,12 @@ function NavShell({ activeIndex }: { activeIndex: number | null }) {
       aria-label="Principal"
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/90 pb-[env(safe-area-inset-bottom,0px)] backdrop-blur-md"
     >
-      <div className="relative mx-auto grid h-16 max-w-[480px] grid-cols-3 px-2">
+      <div className="relative mx-auto grid h-16 max-w-[480px] grid-cols-4 px-2">
         {/* Active pill slides between items (transform only, 200 ms). */}
         {activeIndex !== null && (
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-y-2 left-2 w-[calc((100%-1rem)/3)] rounded-full bg-primary-soft transition-transform duration-200 ease-(--ease-out)"
+            className="pointer-events-none absolute inset-y-2 left-2 w-[calc((100%-1rem)/4)] rounded-full bg-primary-soft transition-transform duration-200 ease-(--ease-out)"
             style={{ transform: `translateX(${activeIndex * 100}%)` }}
           />
         )}

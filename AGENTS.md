@@ -17,6 +17,6 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Cache Components is enabled: any per-day or per-user data must be rendered dynamically (inside `<Suspense>` / request-time APIs), never prerendered.
 - Plan content (meals, swaps, workouts, targets) lives in the database, not in code.
 - Derived values (totals, averages, next workout, load suggestion) are computed, never typed by the user.
-- Health data minimization: no photos, exam results or clinical notes stored in the app.
-- Navigation: bottom tabs Dieta (`/`, also the PWA start_url), Água (`/agua`), Treino (`/treino`); a 4th tab "Metas" is planned. Authenticated pages live in `src/app/(app)/`, whose layout renders the shared header (greeting, date, week, "Sair") and the `BottomNav`; `/entrar` stays outside it. Each tab owns its data (no duplicated entry points: the next workout lives only in Treino).
+- Health data minimization: no photos, exam results or clinical notes stored in the app. Body tracking is only weight and waist, shown with a neutral tone (a decrease is celebrated in `--success`; an increase is never red and never judged).
+- Navigation: bottom tabs Dieta (`/`, also the PWA start_url), Água (`/agua`), Treino (`/treino`), Metas (`/metas`: "Corpo" with weight and waist today; daily/weekly/monthly goals, streaks and feedback will be added above it). Authenticated pages live in `src/app/(app)/`, whose layout renders the shared header (greeting, date, week, "Sair") and the `BottomNav`; `/entrar` stays outside it. Each tab owns its data (no duplicated entry points: the next workout lives only in Treino).
 - Use the skills `emil-design-eng`, `mobile-native`, `apple-design`, `animate`, `ask-sonner` for UI work.

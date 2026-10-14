@@ -63,3 +63,32 @@ export function formatWeekdayShortDate(date: string): string {
   const dm = new Intl.DateTimeFormat("pt-BR", { timeZone: APP_TIME_ZONE, day: "2-digit", month: "2-digit" }).format(d);
   return `${weekday}, ${dm}`;
 }
+
+/** Whole calendar days from `from` to `to` ('YYYY-MM-DD'); negative when `to` is earlier. */
+export function daysBetween(from: string, to: string): number {
+  return Math.round((fromIsoDate(to).getTime() - fromIsoDate(from).getTime()) / 86_400_000);
+}
+
+/** '2026-10-13' → "13/10" */
+export function formatDayMonthShort(date: string): string {
+  return `${date.slice(8, 10)}/${date.slice(5, 7)}`;
+}
+
+/** '2026-10-12' → days since 1970-01-01 (a plain number for chart x-axes). */
+export function toDayNumber(date: string): number {
+  return Math.floor(fromIsoDate(date).getTime() / 86_400_000);
+}
+
+/** Inverse of toDayNumber. */
+export function fromDayNumber(day: number): string {
+  return new Date(day * 86_400_000).toISOString().slice(0, 10);
+}
+
+/** e.g. "seg 12/10" */
+export function formatWeekdayAbbrDate(date: string): string {
+  const d = fromIsoDate(date);
+  const weekday = new Intl.DateTimeFormat("pt-BR", { timeZone: APP_TIME_ZONE, weekday: "short" })
+    .format(d)
+    .replace(".", "");
+  return `${weekday} ${formatDayMonthShort(date)}`;
+}
