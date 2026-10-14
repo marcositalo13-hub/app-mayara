@@ -265,6 +265,22 @@
   animation: illus-swap 2800ms linear infinite;
 }
 
+/* Water bottle: level follows the value (300 ms); the surface drifts as a gentle loop. */
+.water-level {
+  transition: transform 300ms var(--ease-out);
+}
+@keyframes water-wave {
+  from { transform: translateX(0); }
+  to { transform: translateX(-160px); }
+}
+.water-wave {
+  animation: water-wave 3200ms linear infinite;
+}
+.water-wave-back {
+  animation-duration: 5200ms;
+  animation-direction: reverse;
+}
+
 /* Pressable feedback. */
 .pressable {
   transition: transform 120ms var(--ease-out);
@@ -287,5 +303,9 @@
   .illus-swap {
     animation: none !important;
     opacity: 0;
+  }
+  /* Still water surface. */
+  .water-wave {
+    animation: none !important;
   }
 }

@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-type TodayHeaderProps = {
+type AccountHeaderProps = {
   displayName: string;
   dateLabel: string;
   weekLabel: string | null;
@@ -18,13 +18,13 @@ type TodayHeaderProps = {
   signOut: () => Promise<void>;
 };
 
-export function TodayHeader({ displayName, dateLabel, weekLabel, isAdmin, signOut }: TodayHeaderProps) {
+export function AccountHeader({ displayName, dateLabel, weekLabel, isAdmin, signOut }: AccountHeaderProps) {
   const [signingOut, startSignOut] = useTransition();
 
   return (
     <header className="flex items-start justify-between gap-3">
       <div className="flex min-w-0 flex-col gap-0.5">
-        <h1 className="text-2xl [overflow-wrap:anywhere]">Oi, {displayName}</h1>
+        <p className="text-2xl leading-tight font-extrabold [overflow-wrap:anywhere]">Oi, {displayName}</p>
         <p className="text-text-muted first-letter:uppercase">{dateLabel}</p>
         {weekLabel && <p className="font-bold text-primary">{weekLabel}</p>}
         {isAdmin && <p className="text-text-muted">Você está como administrador</p>}

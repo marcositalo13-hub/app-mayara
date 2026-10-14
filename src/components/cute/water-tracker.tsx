@@ -16,6 +16,8 @@ type WaterTrackerProps = {
   filled?: number;
   defaultFilled?: number;
   onChange?: (filled: number) => void;
+  /** Show the "x L de y L" line (hide when the screen already shows it). */
+  showLabel?: boolean;
   className?: string;
 };
 
@@ -24,6 +26,7 @@ export function WaterTracker({
   filled: filledProp,
   defaultFilled = 0,
   onChange,
+  showLabel = true,
   className,
 }: WaterTrackerProps) {
   const [filledState, setFilledState] = useState(defaultFilled);
@@ -76,9 +79,11 @@ export function WaterTracker({
           );
         })}
       </div>
-      <p className="text-center font-bold tabular-nums" aria-live="polite">
-        {formatLiters(filled * CUP_ML)} L de {formatLiters(cups * CUP_ML)} L
-      </p>
+      {showLabel && (
+        <p className="text-center font-bold tabular-nums" aria-live="polite">
+          {formatLiters(filled * CUP_ML)} L de {formatLiters(cups * CUP_ML)} L
+        </p>
+      )}
     </div>
   );
 }

@@ -1,5 +1,4 @@
-// Shape of the "Hoje" screen data. Client-safe (types only).
-import type { CardioWeek } from "./workout-types";
+// Shape of the Dieta tab data. Client-safe (types only).
 
 export type TodayMember = {
   displayName: string;
@@ -45,12 +44,6 @@ export type TodaySwapGroup = {
   items: { id: string; food: string; portion: string }[];
 };
 
-export type TodayNextWorkout = {
-  code: string;
-  name: string;
-  exercise_count: number;
-};
-
 export type TodayData =
   | {
       status: "ok";
@@ -61,10 +54,6 @@ export type TodayData =
       meals: TodayMeal[];
       mealLogs: TodayMealLog[];
       waterMl: number;
-      nextWorkout: TodayNextWorkout | null;
-      /** Unfinished workout session, if any (any date). */
-      openSessionId: string | null;
-      cardio: CardioWeek | null;
       swapGroups: TodaySwapGroup[];
     }
   | {
@@ -81,6 +70,4 @@ export type ActionResult = { ok: true } | { ok: false; message: string };
 
 export type TodayActions = {
   setMealDone: (input: { mealId: string; optionId: string; done: boolean }) => Promise<ActionResult>;
-  setWater: (input: { ml: number }) => Promise<ActionResult>;
-  signOut: () => Promise<void>;
 };

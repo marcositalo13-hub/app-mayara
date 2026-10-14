@@ -28,7 +28,7 @@ const toSet = (r: { set_no: number; load_kg: number | string; reps: number }): L
 // Cardio
 // ---------------------------------------------------------------------------
 
-/** Current week's cardio target and what was logged in it. Shared with the Hoje screen. */
+/** Current week's cardio target and what was logged in it. Shared by the Treino screens. */
 export async function loadCardioWeek(
   supabase: SupabaseClient,
   userId: string,

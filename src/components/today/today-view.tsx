@@ -1,24 +1,19 @@
 "use client";
 
-import { useEffect, useOptimistic, useRef, useState, useTransition } from "react";
+import { useOptimistic, useRef, useState, useTransition } from "react";
 import Link from "next/link";
-import { Dumbbell } from "lucide-react";
 import { toast } from "sonner";
-import { CelebrationBurst, CUP_ML, formatLiters, HeartProgress, WaterTracker } from "@/components/cute";
-import { buttonVariants } from "@/components/ui/button";
+import { CelebrationBurst, formatLiters, HeartProgress } from "@/components/cute";
 import { Card, CardContent } from "@/components/ui/card";
-import { CardioProgress } from "@/components/workout/cardio-progress";
 import type { TodayActions, TodayData, TodayMeal } from "@/lib/data/today-types";
 import { MealCard } from "./meal-card";
 import { SwapsSheet } from "./swaps-sheet";
-import { TodayHeader } from "./today-header";
 
 type OkData = Extract<TodayData, { status: "ok" }>;
 /** mealId → logged optionId (null when the log has no option). Presence = done. */
 type LogMap = Record<string, string | null>;
 type LogChange = { mealId: string; optionId: string | null; done: boolean };
 
-const WATER_DEBOUNCE_MS = 600;
 const CELEBRATED_KEY = "mayara:celebrated-on";
 
 const toLogMap = (logs: OkData["mealLogs"]): LogMap =>
@@ -43,41 +38,31 @@ export function dayProgress(mealIds: string[], logs: LogMap, waterMl: number, wa
 
 type TodayViewProps = {
   data: OkData;
-  dateLabel: string;
   actions: TodayActions;
 };
 
-export function TodayView({ data, dateLabel, actions }: TodayViewProps) {
+/** Dieta tab: day progress (meals + water, read-only here), meals and swaps. */
+export function TodayView({ data, actions }: TodayViewProps) {
   const goalMl = data.week.water_ml_target;
-  const cups = Math.max(1, Math.round(goalMl / CUP_ML));
+  // Water is edited on the Água tab; here it only counts toward the heart.
+  const waterMl = data.waterMl;
   const mealIds = data.meals.map((m) => m.id);
 
   // Confirmed state starts from the server and follows it whenever new props arrive
   // (after revalidation); optimistic layers sit on top while a write is in flight.
   const [synced, setSynced] = useState(data);
   const [confirmedLogs, setConfirmedLogs] = useState(() => toLogMap(data.mealLogs));
-  const [confirmedMl, setConfirmedMl] = useState(data.waterMl);
   if (synced !== data) {
     setSynced(data);
     setConfirmedLogs(toLogMap(data.mealLogs));
-    setConfirmedMl(data.waterMl);
   }
 
   const [logs, applyLog] = useOptimistic(confirmedLogs, applyChange);
-  const [optimisticMl, setOptimisticMl] = useOptimistic(confirmedMl);
-  const [draftMl, setDraftMl] = useState<number | null>(null);
-  const waterMl = draftMl ?? optimisticMl;
-
   const [, startMealTransition] = useTransition();
-  const [, startWaterTransition] = useTransition();
-  const waterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const confirmedMlRef = useRef(data.waterMl);
 
   const [selected, setSelected] = useState<Record<string, string>>({});
   const [celebrating, setCelebrating] = useState(false);
   const celebratedThisLoad = useRef(false);
-
-  const pendingMl = useRef<number | null>(null);
 
   const progress = dayProgress(mealIds, logs, waterMl, goalMl);
   const mealsDone = mealIds.filter((id) => id in logs).length;
@@ -127,70 +112,8 @@ export function TodayView({ data, dateLabel, actions }: TodayViewProps) {
     if (meal.id in logs && logs[meal.id] !== optionId) saveMeal(meal, optionId, true);
   }
 
-  function changeWater(filledCups: number) {
-    const ml = filledCups * CUP_ML;
-    maybeCelebrate(progress, dayProgress(mealIds, logs, ml, goalMl));
-    setDraftMl(ml);
-    pendingMl.current = ml;
-    if (waterTimer.current) clearTimeout(waterTimer.current);
-    // Rapid taps collapse into one write with the final value.
-    waterTimer.current = setTimeout(() => {
-      waterTimer.current = null;
-      pendingMl.current = null;
-      saveWater(ml);
-    }, WATER_DEBOUNCE_MS);
-  }
-
-  function saveWater(ml: number) {
-    startWaterTransition(async () => {
-      setOptimisticMl(ml);
-      setDraftMl(null);
-      const result = await actions.setWater({ ml });
-      if (!result.ok) {
-        toast.error(result.message, { id: "save-error" });
-        return;
-      }
-      const before = confirmedMlRef.current;
-      confirmedMlRef.current = ml;
-      setConfirmedMl(ml);
-      if (before < goalMl && ml >= goalMl) toast.success("Meta de água batida");
-    });
-  }
-
-  const saveWaterRef = useRef<(ml: number) => void>(() => {});
-  useEffect(() => {
-    saveWaterRef.current = saveWater;
-  });
-  // A debounced write still waiting when the app is hidden/closed is sent right away.
-  useEffect(() => {
-    const flush = () => {
-      if (waterTimer.current) clearTimeout(waterTimer.current);
-      waterTimer.current = null;
-      if (pendingMl.current === null) return;
-      const ml = pendingMl.current;
-      pendingMl.current = null;
-      saveWaterRef.current(ml);
-    };
-    const onVisibility = () => {
-      if (document.visibilityState === "hidden") flush();
-    };
-    document.addEventListener("visibilitychange", onVisibility);
-    return () => {
-      document.removeEventListener("visibilitychange", onVisibility);
-      flush();
-    };
-  }, []);
-
   return (
     <div className="flex flex-col gap-6">
-      <TodayHeader
-        displayName={data.member.displayName}
-        dateLabel={dateLabel}
-        weekLabel={`Semana ${data.week.week_no} de ${data.week.total_weeks}`}
-        isAdmin={data.member.role === "admin"}
-        signOut={actions.signOut}
-      />
-
       <Card>
         <CardContent className="relative flex items-center gap-5">
           <HeartProgress value={progress} size={104} label="do dia concluído" className="shrink-0" />
@@ -201,9 +124,12 @@ export function TodayView({ data, dateLabel, actions }: TodayViewProps) {
                 {mealsDone} de {mealIds.length} {mealIds.length === 1 ? "refeição" : "refeições"}
               </p>
             )}
-            <p className="text-text-muted tabular-nums">
+            <Link
+              href="/agua"
+              className="-mx-1 -my-3 rounded-sm px-1 py-3 text-text-muted tabular-nums underline decoration-text-muted/40 decoration-dotted underline-offset-4 outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            >
               {formatLiters(waterMl)} L de {formatLiters(goalMl)} L de água
-            </p>
+            </Link>
           </div>
           {celebrating && <CelebrationBurst onDone={() => setCelebrating(false)} />}
         </CardContent>
@@ -235,77 +161,6 @@ export function TodayView({ data, dateLabel, actions }: TodayViewProps) {
           </p>
         )}
       </section>
-
-      <section aria-labelledby="water-title">
-        <Card>
-          <CardContent className="flex flex-col gap-4">
-            <h2 id="water-title" className="text-xl">
-              Água
-            </h2>
-            <WaterTracker
-              cups={cups}
-              filled={Math.min(cups, Math.round(waterMl / CUP_ML))}
-              onChange={changeWater}
-            />
-          </CardContent>
-        </Card>
-      </section>
-
-      {(data.nextWorkout || data.openSessionId) && (
-        <section aria-label="Treino">
-          <Card>
-            <CardContent className="flex flex-col gap-4">
-              <div className="flex items-center gap-4">
-                <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
-                  <Dumbbell aria-hidden className="size-6" />
-                </span>
-                <div className="flex min-w-0 flex-col">
-                  {data.openSessionId ? (
-                    <p className="font-extrabold">Você tem um treino em andamento</p>
-                  ) : (
-                    data.nextWorkout && (
-                      <>
-                        <p className="font-extrabold [overflow-wrap:anywhere]">
-                          Treino da vez: {data.nextWorkout.code} — {data.nextWorkout.name}
-                        </p>
-                        <p className="text-text-muted">
-                          {data.nextWorkout.exercise_count === 1
-                            ? "1 exercício"
-                            : `${data.nextWorkout.exercise_count} exercícios`}
-                        </p>
-                      </>
-                    )
-                  )}
-                </div>
-              </div>
-              <Link
-                href={data.openSessionId ? `/treino/${data.openSessionId}` : "/treino"}
-                className={buttonVariants({ className: "w-full" })}
-              >
-                {data.openSessionId ? "Continuar treino" : "Começar treino"}
-              </Link>
-            </CardContent>
-          </Card>
-        </section>
-      )}
-
-      {data.cardio && (
-        <section aria-labelledby="cardio-title">
-          <Link
-            href="/treino"
-            className="pressable block rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-          >
-            <Card>
-              <CardContent className="flex flex-col gap-3">
-                <h2 id="cardio-title" className="text-xl">
-                  Cardio da semana
-                </h2>
-                <CardioProgress week={data.cardio} />
-              </CardContent>
-            </Card>
-          </Link>
-        </section>
-      )}
     </div>
   );
 }

@@ -109,5 +109,6 @@ export async function setWater(input: { ml: number }): Promise<ActionResult> {
   }
 
   revalidatePath("/");
+  revalidatePath("/agua");
   return { ok: true };
 }

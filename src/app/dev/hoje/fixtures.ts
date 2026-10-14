@@ -110,9 +110,6 @@ const base: Ok = {
   meals: demoMeals,
   mealLogs: [{ meal_id: "meal-cafe", option_id: demoMeals[0].options[1].id }],
   waterMl: 750,
-  nextWorkout: { code: "A", name: "Inferiores — glúteo e posterior", exercise_count: 6 },
-  openSessionId: null,
-  cardio: { week_no: 1, targetMinutes: 60, targetSessions: 3, rpeMin: 6, rpeMax: 7, loggedMinutes: 20, loggedSessions: 1 },
   swapGroups: demoSwaps,
 };
 
@@ -149,11 +146,6 @@ const fixtures: Record<string, TodayData> = {
     meals: worstMeals,
     mealLogs: [{ meal_id: "w-2", option_id: null }],
     waterMl: 5250,
-    nextWorkout: {
-      code: "D",
-      name: "Glúteo e corpo inteiro com ênfase em posterior de coxa e estabilidade de core",
-      exercise_count: 1,
-    },
     swapGroups: [
       ...demoSwaps,
       {
@@ -164,15 +156,13 @@ const fixtures: Record<string, TodayData> = {
       },
     ],
   },
-  vazio: { ...base, meals: [], mealLogs: [], swapGroups: [], nextWorkout: null, waterMl: 0 },
+  vazio: { ...base, meals: [], mealLogs: [], swapGroups: [], waterMl: 0 },
   "uma-opcao": {
     ...base,
     meals: demoMeals.map((m) => ({ ...m, options: m.options.slice(0, 1) })),
     mealLogs: [],
   },
   "agua-1500": { ...base, week: { ...base.week, water_ml_target: 1500 }, waterMl: 1250 },
-  "sem-treino": { ...base, nextWorkout: null, cardio: null },
-  "treino-aberto": { ...base, openSessionId: "00000000-0000-4000-8000-000000000001" },
   "quase-100": {
     ...base,
     mealLogs: demoMeals.map((m) => ({ meal_id: m.id, option_id: m.options[0].id })),

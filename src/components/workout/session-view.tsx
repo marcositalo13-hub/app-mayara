@@ -83,7 +83,7 @@ type SessionViewProps = {
   treinoHref?: string;
 };
 
-export function SessionView({ detail, cardio, actions, homeHref = "/", treinoHref = "/treino" }: SessionViewProps) {
+export function SessionView({ detail, cardio, actions, homeHref = "/treino", treinoHref = "/treino" }: SessionViewProps) {
   const router = useRouter();
   const sessionId = detail.session.id;
 

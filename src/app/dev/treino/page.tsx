@@ -89,7 +89,7 @@ export default function DevTreinoPage({ searchParams }: { searchParams: SearchPa
           <DevTreino searchParams={searchParams} />
         </Suspense>
       </main>
-      <BottomNavFallback activeIndex={1} />
+      <BottomNavFallback activeIndex={2} />
     </>
   );
 }

@@ -39,3 +39,27 @@ export function formatDayMonth(date: string): string {
 export function formatTimeHint(time: string | null): string | null {
   return time ? time.slice(0, 5) : null;
 }
+
+/** '2026-10-14' + (-6) → '2026-10-08' (calendar arithmetic, no time zone drift). */
+export function addDays(date: string, days: number): string {
+  const d = fromIsoDate(date);
+  d.setUTCDate(d.getUTCDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
+/** e.g. "T" for terça-feira */
+export function formatWeekdayNarrow(date: string): string {
+  return new Intl.DateTimeFormat("pt-BR", { timeZone: APP_TIME_ZONE, weekday: "narrow" })
+    .format(fromIsoDate(date))
+    .toUpperCase();
+}
+
+/** e.g. "terça, 13/10" */
+export function formatWeekdayShortDate(date: string): string {
+  const d = fromIsoDate(date);
+  const weekday = new Intl.DateTimeFormat("pt-BR", { timeZone: APP_TIME_ZONE, weekday: "long" })
+    .format(d)
+    .replace("-feira", "");
+  const dm = new Intl.DateTimeFormat("pt-BR", { timeZone: APP_TIME_ZONE, day: "2-digit", month: "2-digit" }).format(d);
+  return `${weekday}, ${dm}`;
+}
