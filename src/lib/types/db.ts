@@ -129,6 +129,8 @@ export type ExerciseRow = {
   name_pt: string;
   instructions_pt: string[] | null;
   caution_pt: string | null;
+  /** Added in migrations/0004_exercise_purpose.sql. */
+  purpose_pt: string | null;
   source_ref: string | null;
   image_paths: string[];
   /** Added in migrations/0003_workout_logging.sql. 0 = bodyweight/time. */

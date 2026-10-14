@@ -30,6 +30,7 @@ export type SessionExercise = {
     name_pt: string;
     instructions_pt: string[];
     caution_pt: string | null;
+    purpose_pt: string | null;
     image_paths: string[];
     increment_kg: number;
   };
@@ -53,6 +54,8 @@ export type WorkoutPreview = {
   exercises: {
     id: string;
     name_pt: string;
+    /** Not shown in the compact preview list; carried for completeness. */
+    purpose_pt: string | null;
     sets: number;
     reps_min: number;
     reps_max: number;

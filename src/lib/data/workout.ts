@@ -96,7 +96,7 @@ type PreviewQueryRow = {
     workout_exercises: (Pick<
       WorkoutExerciseRow,
       "id" | "sort" | "sets" | "reps_min" | "reps_max" | "reps_unit" | "per_side"
-    > & { exercises: Pick<ExerciseRow, "name_pt"> | null })[];
+    > & { exercises: Pick<ExerciseRow, "name_pt" | "purpose_pt"> | null })[];
   })[];
 };
 
@@ -112,7 +112,7 @@ export async function getWorkoutScreen(): Promise<WorkoutScreen> {
       .select(
         `workouts ( id, code, sort, name,
            workout_exercises ( id, sort, sets, reps_min, reps_max, reps_unit, per_side,
-             exercises ( name_pt ) ) )`,
+             exercises ( name_pt, purpose_pt ) ) )`,
       )
       .eq("is_active", true)
       .maybeSingle(),
@@ -137,6 +137,7 @@ export async function getWorkoutScreen(): Promise<WorkoutScreen> {
         .map((we) => ({
           id: we.id,
           name_pt: we.exercises?.name_pt ?? "",
+          purpose_pt: we.exercises?.purpose_pt ?? null,
           sets: we.sets,
           reps_min: we.reps_min,
           reps_max: we.reps_max,
@@ -166,7 +167,7 @@ type SessionQueryRow = {
     workout_exercises: (Omit<WorkoutExerciseRow, "workout_id" | "exercise_id" | "created_at"> & {
       exercises: Pick<
         ExerciseRow,
-        "slug" | "name_pt" | "instructions_pt" | "caution_pt" | "image_paths" | "increment_kg"
+        "slug" | "name_pt" | "instructions_pt" | "caution_pt" | "purpose_pt" | "image_paths" | "increment_kg"
       > | null;
     })[];
   }) | null;
@@ -220,7 +221,7 @@ async function loadSessionDetail(
         `id, started_at, finished_at,
          workouts ( id, code, name,
            workout_exercises ( id, sort, sets, reps_min, reps_max, reps_unit, per_side, rest_s, note,
-             exercises ( slug, name_pt, instructions_pt, caution_pt, image_paths, increment_kg ) ) )`,
+             exercises ( slug, name_pt, instructions_pt, caution_pt, purpose_pt, image_paths, increment_kg ) ) )`,
       )
       .eq("id", sessionId)
       .eq("user_id", userId)
@@ -317,6 +318,7 @@ async function loadSessionDetail(
           name_pt: ex?.name_pt ?? "Exercício",
           instructions_pt: ex?.instructions_pt ?? [],
           caution_pt: ex?.caution_pt ?? null,
+          purpose_pt: ex?.purpose_pt ?? null,
           image_paths: ex?.image_paths ?? [],
           increment_kg: incrementKg,
         },

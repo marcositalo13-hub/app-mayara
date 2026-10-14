@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { ChevronDown, Plus, ShieldPlus, Sparkles } from "lucide-react";
+import { ChevronDown, Plus, ShieldPlus, Sparkles, TrendingUp } from "lucide-react";
 import { CheckButton } from "@/components/cute";
 import type { LoggedSet, SessionExercise } from "@/lib/data/workout-types";
 import { cn } from "@/lib/utils";
@@ -91,10 +91,20 @@ export function ExerciseCard({ ex, logged, onCheck, onUncheck, onEditLogged }: E
         {ex.note && <p className="text-text-muted [overflow-wrap:anywhere]">{ex.note}</p>}
       </div>
 
+      {ex.exercise.purpose_pt && (
+        <section aria-label="Para que serve" className="flex gap-3 rounded-md bg-accent-soft px-4 py-3 text-text">
+          <Sparkles aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
+          <div className="flex min-w-0 flex-col gap-0.5">
+            <h3 className="font-extrabold text-accent">Para que serve</h3>
+            <p className="text-base [overflow-wrap:anywhere]">{ex.exercise.purpose_pt}</p>
+          </div>
+        </section>
+      )}
+
       <div className="flex flex-col gap-2">
         {ex.suggestion ? (
           <p className="inline-flex w-fit items-center gap-2 rounded-full bg-primary-soft px-3 py-1.5 font-bold text-primary">
-            <Sparkles aria-hidden className="size-4 shrink-0" />
+            <TrendingUp aria-hidden className="size-4 shrink-0" />
             {ex.suggestion.label}
           </p>
         ) : (
@@ -108,8 +118,8 @@ export function ExerciseCard({ ex, logged, onCheck, onUncheck, onEditLogged }: E
       </div>
 
       {ex.exercise.caution_pt && (
-        <p className="flex gap-3 rounded-md bg-accent-soft px-4 py-3 text-accent">
-          <ShieldPlus aria-hidden className="mt-0.5 size-5 shrink-0" />
+        <p className="flex gap-3 rounded-md bg-primary-soft px-4 py-3 font-bold text-text ring-1 ring-primary/50">
+          <ShieldPlus aria-hidden className="mt-0.5 size-5 shrink-0 text-primary" />
           <span>{ex.exercise.caution_pt}</span>
         </p>
       )}

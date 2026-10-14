@@ -9,6 +9,8 @@ Os arquivos são executados **manualmente** no SQL Editor do Supabase, nesta ord
 5. `checks/0002_verify.sql`: apenas leitura, uma linha por exercício.
 6. `migrations/0003_workout_logging.sql`: uma sessão de treino aberta por vez e o incremento de carga de cada exercício. Rode uma vez só.
 7. `checks/0003_verify.sql`: apenas leitura (esperado: 21 exercícios com incremento e o índice criado).
+8. `migrations/0004_exercise_purpose.sql`: o texto "Para que serve" de cada exercício. Rode uma vez só, **antes** de publicar esta versão do app (ele já lê a coluna nova).
+9. `checks/0004_verify.sql`: apenas leitura (esperado: 27).
 
 ## Depois de criar as contas
 

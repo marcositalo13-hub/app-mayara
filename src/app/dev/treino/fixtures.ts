@@ -6,6 +6,16 @@ import { computeSuggestion, NO_HISTORY_HINT } from "@/lib/workout/format";
 const CAUTION_CORE =
   "Solte o ar ao fazer força e firme a barriga antes de cada repetição. Se a linha do meio da barriga estufar, diminua a carga.";
 
+const PURPOSES: Record<string, string> = {
+  "hip-thrust": "O exercício número 1 do bumbum. É ele que deixa o glúteo empinado e bonito na calça, e mais forte para pegar as crianças no colo.",
+  "stiff-halteres": "Trabalha a parte de trás da coxa e o bumbum juntos. Desenha a perna por trás e protege a lombar quando você se abaixa.",
+  "agachamento-bulgaro": "Uma perna de cada vez, então nenhum lado trabalha mais que o outro. Bumbum e coxa ganham forma por igual, e o equilíbrio agradece.",
+  "dead-bug": "Fortalece a parte funda da barriga sem forçar a linha do meio. É um dos melhores amigos de quem tem diástase.",
+  "rosca-direta": "Fortalece a frente do braço. É o músculo que carrega criança, sacola e tudo mais no dia a dia.",
+  "leg-press-45": "Trabalha coxa e bumbum com as costas apoiadas, então dá para pôr carga com segurança e ver a força crescer semana a semana.",
+  "prancha-lateral-joelhos": "Fortalece a lateral da barriga, que ajuda a desenhar a cintura. Com os joelhos apoiados, é segura para a diástase.",
+};
+
 let seq = 0;
 const uuid = () => `00000000-0000-4000-8000-${String(++seq).padStart(12, "0")}`;
 
@@ -25,6 +35,7 @@ function exercise(p: {
   inc: number;
   images?: boolean;
   caution?: string;
+  purpose?: string | null;
   steps?: string[];
   last?: LoggedSet[] | null;
   logged?: LoggedSet[];
@@ -55,6 +66,7 @@ function exercise(p: {
         "Volte à posição inicial soltando o ar.",
       ],
       caution_pt: p.caution ?? null,
+      purpose_pt: p.purpose === undefined ? PURPOSES[p.slug] ?? null : p.purpose,
       image_paths: p.images === false ? [] : [`/exercises/${p.slug}/0.jpg`, `/exercises/${p.slug}/1.jpg`],
       increment_kg: p.inc,
     },
@@ -217,6 +229,7 @@ const preview = (id: string, code: string, name: string, n: number): WorkoutPrev
   name,
   exercises: Array.from({ length: n }, (_, i) => ({
     id: `${id}-${i}`,
+    purpose_pt: null,
     name_pt: ["Elevação pélvica (hip thrust)", "Stiff com halteres", "Agachamento búlgaro com halteres", "Mesa flexora", "Abdução de quadril na máquina", "Dead bug", "Pallof press", "Panturrilha em pé"][i % 8],
     sets: i === 0 ? 4 : 3,
     reps_min: 10,
