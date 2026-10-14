@@ -5,6 +5,9 @@ import { BottomNavFallback } from "@/components/nav/BottomNav";
 import { MetasView } from "@/components/body/metas-view";
 import type { BodyData, BodyPoint, MeasurementResult, WeeklyPoint } from "@/lib/data/body-types";
 import { addDays, daysBetween } from "@/lib/date";
+import { GoalsSection } from "@/components/goals/goals-section";
+import type { GoalsTab } from "@/lib/data/goals-types";
+import { GOALS_SCENARIOS, goalsFixture } from "./goals-fixtures";
 import { mockSaveMeasurement } from "./mock-actions";
 
 // Dev-only preview of Metas > Corpo: /dev/metas?data=normal|vazio|uma|so-peso|so-cintura|90dias&fail=1
@@ -99,20 +102,25 @@ const FIXTURES: Record<string, BodyData> = {
   "90dias": build(longSeries()),
 };
 
-type SearchParams = Promise<{ data?: string; fail?: string }>;
+type SearchParams = Promise<{ data?: string; fail?: string; metas?: string; aba?: string; mes?: string }>;
 
 async function DevMetas({ searchParams }: { searchParams: SearchParams }) {
-  const { data: name = "normal", fail } = await searchParams;
+  const { data: name = "normal", fail, metas = "normal", aba, mes } = await searchParams;
+  const goals = goalsFixture(metas, mes);
+  const tab: GoalsTab = aba === "semana" || aba === "mes" ? aba : "dia";
+  const qs = (over: Record<string, string>) =>
+    new URLSearchParams({ data: name, metas, ...(aba ? { aba } : {}), ...over }).toString();
   const failWrites = fail === "1";
   const data = FIXTURES[name] ?? FIXTURES.normal;
 
   return (
     <>
       <MetasView
-        key={`${name}-${failWrites}`}
+        key={`${name}-${failWrites}-${metas}-${mes}`}
         data={data}
         displayName="Mayara"
         avatarUrl={null}
+        goals={<GoalsSection data={goals} initialTab={tab} hrefBase={`/dev/metas?data=${name}&metas=${metas}&`} />}
         saveMeasurement={mockSaveMeasurement.bind(null, failWrites) as (i: unknown) => Promise<MeasurementResult>}
       />
       <nav
@@ -126,6 +134,15 @@ async function DevMetas({ searchParams }: { searchParams: SearchParams }) {
             className={`shrink-0 rounded-full px-3 py-1 ${f === name ? "bg-background text-text" : ""}`}
           >
             {f}
+          </Link>
+        ))}
+        {GOALS_SCENARIOS.map((g) => (
+          <Link
+            key={g}
+            href={`/dev/metas?${qs({ metas: g })}`}
+            className={`shrink-0 rounded-full px-3 py-1 underline ${g === metas ? "bg-background text-text" : ""}`}
+          >
+            {g}
           </Link>
         ))}
         <Link

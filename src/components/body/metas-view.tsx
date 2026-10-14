@@ -16,10 +16,12 @@ type MetasViewProps = {
   data: BodyData;
   displayName: string;
   avatarUrl: string | null;
+  /** Goals section (daily/weekly/monthly + feedback), rendered above "Corpo". */
+  goals?: React.ReactNode;
   saveMeasurement: (input: SaveMeasurementInput) => Promise<MeasurementResult>;
 };
 
-export function MetasView({ data, displayName, avatarUrl, saveMeasurement }: MetasViewProps) {
+export function MetasView({ data, displayName, avatarUrl, goals, saveMeasurement }: MetasViewProps) {
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const weighings = data.daily.filter((d) => d.weightKg !== null);
@@ -33,10 +35,7 @@ export function MetasView({ data, displayName, avatarUrl, saveMeasurement }: Met
         <h1 className="min-w-0 text-2xl [overflow-wrap:anywhere]">Suas metas, {displayName}</h1>
       </div>
 
-      {/*
-        Future sections (daily, weekly and monthly goals, streaks, feedback) go here, above
-        "Corpo". Nothing is rendered for them yet.
-      */}
+      {goals}
 
       <section aria-labelledby="body-title" className="flex flex-col gap-4">
         <h2 id="body-title" className="text-xl">
