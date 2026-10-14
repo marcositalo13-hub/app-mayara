@@ -11,6 +11,8 @@ Os arquivos são executados **manualmente** no SQL Editor do Supabase, nesta ord
 7. `checks/0003_verify.sql`: apenas leitura (esperado: 21 exercícios com incremento e o índice criado).
 8. `migrations/0004_exercise_purpose.sql`: o texto "Para que serve" de cada exercício. Rode uma vez só, **antes** de publicar esta versão do app (ele já lê a coluna nova).
 9. `checks/0004_verify.sql`: apenas leitura (esperado: 27).
+10. `migrations/0005_avatars.sql`: foto de perfil (bucket privado `avatars` e a coluna `members.avatar_path`). Rode uma vez só. O app funciona sem ela (só não mostra foto), mas o envio de foto só funciona depois dela.
+11. `checks/0005_verify.sql`: apenas leitura (esperado: bucket privado, 4 políticas e a coluna `avatar_path`).
 
 ## Depois de criar as contas
 

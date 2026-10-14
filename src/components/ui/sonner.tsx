@@ -1,14 +1,16 @@
 "use client"
 
 import { Toaster as Sonner, type ToasterProps } from "sonner"
+import { useTheme } from "@/components/theme/theme-provider"
 import { CircleCheckIcon, InfoIcon, TriangleAlertIcon, OctagonXIcon, Loader2Icon } from "lucide-react"
 
-// Colors come from tokens via CSS variables, so the toaster follows the
-// active theme (OS or the /estilo preview class) without next-themes.
+// Colors come from tokens via CSS variables; sonner's own theme prop follows the
+// chosen preference (light / dark / system).
 const Toaster = ({ ...props }: ToasterProps) => {
+  const { theme } = useTheme()
   return (
     <Sonner
-      theme="system"
+      theme={theme}
       position="top-center"
       className="toaster group"
       mobileOffset={{ top: "calc(env(safe-area-inset-top, 0px) + 12px)" }}

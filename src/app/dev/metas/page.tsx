@@ -111,6 +111,8 @@ async function DevMetas({ searchParams }: { searchParams: SearchParams }) {
       <MetasView
         key={`${name}-${failWrites}`}
         data={data}
+        displayName="Mayara"
+        avatarUrl={null}
         saveMeasurement={mockSaveMeasurement.bind(null, failWrites) as (i: unknown) => Promise<MeasurementResult>}
       />
       <nav

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ArrowDown, ArrowUp, Minus, Ruler } from "lucide-react";
+import { Avatar } from "@/components/profile/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { BodyChart, type ChartPoint } from "@/components/body/body-chart";
@@ -13,10 +14,12 @@ import { cn } from "@/lib/utils";
 
 type MetasViewProps = {
   data: BodyData;
+  displayName: string;
+  avatarUrl: string | null;
   saveMeasurement: (input: SaveMeasurementInput) => Promise<MeasurementResult>;
 };
 
-export function MetasView({ data, saveMeasurement }: MetasViewProps) {
+export function MetasView({ data, displayName, avatarUrl, saveMeasurement }: MetasViewProps) {
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const weighings = data.daily.filter((d) => d.weightKg !== null);
@@ -25,7 +28,10 @@ export function MetasView({ data, saveMeasurement }: MetasViewProps) {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-2xl">Metas</h1>
+      <div className="flex items-center gap-3">
+        <Avatar displayName={displayName} src={avatarUrl} size="md" />
+        <h1 className="min-w-0 text-2xl [overflow-wrap:anywhere]">Suas metas, {displayName}</h1>
+      </div>
 
       {/*
         Future sections (daily, weekly and monthly goals, streaks, feedback) go here, above

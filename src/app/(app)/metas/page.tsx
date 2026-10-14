@@ -3,13 +3,21 @@ import type { Metadata } from "next";
 import { MetasView } from "@/components/body/metas-view";
 import { MetasSkeleton } from "@/components/body/metas-skeleton";
 import { getBodyData } from "@/lib/data/body";
+import { getProfile } from "@/lib/data/profile";
 import { saveMeasurement } from "./actions";
 
 export const metadata: Metadata = { title: "Metas · Plano Mayara" };
 
 async function MetasContent() {
-  const data = await getBodyData();
-  return <MetasView data={data} saveMeasurement={saveMeasurement} />;
+  const [data, profile] = await Promise.all([getBodyData(), getProfile()]);
+  return (
+    <MetasView
+      data={data}
+      displayName={profile.displayName}
+      avatarUrl={profile.avatarUrl}
+      saveMeasurement={saveMeasurement}
+    />
+  );
 }
 
 export default function MetasPage() {

@@ -7,7 +7,7 @@ import { TodayEmpty } from "@/components/today/today-empty";
 import { TodayView } from "@/components/today/today-view";
 import { formatDayMonth, formatLongDate } from "@/lib/date";
 import { FIXTURE_NAMES, getFixture } from "./fixtures";
-import { mockSetMealDone, mockSignOut } from "./mock-actions";
+import { mockNoop, mockSetMealDone, mockSignOut } from "./mock-actions";
 
 // Dev-only preview of the Dieta tab with fixtures: /dev/hoje?data=worst&fail=1
 
@@ -21,11 +21,17 @@ async function DevDiet({ searchParams }: { searchParams: SearchParams }) {
   return (
     <>
       <AccountHeader
+        userId="00000000-0000-4000-8000-000000000001"
         displayName={data.member.displayName}
+        avatarUrl={null}
         dateLabel={formatLongDate(data.today)}
         weekLabel={data.status === "ok" ? `Semana ${data.week.week_no} de ${data.week.total_weeks}` : null}
         isAdmin={data.member.role === "admin"}
-        signOut={mockSignOut}
+        actions={{
+          setAvatar: mockNoop,
+          removeAvatar: mockNoop,
+          signOut: mockSignOut,
+        }}
       />
       <div className="pt-6">
         {data.status === "ok" ? (

@@ -3,15 +3,15 @@
 @import "shadcn/tailwind.css";
 
 /*
- * Dark mode: follows the OS by default; an explicit .dark / .light class on
- * <html> overrides it (used by the /estilo preview toggle, not persisted).
+ * Theme: <html data-theme="light|dark|system">. "system" follows prefers-color-scheme.
+ * Tailwind's dark: variant matches the same two situations.
  */
 @custom-variant dark {
-  &:where(.dark, .dark *) {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
     @slot;
   }
   @media (prefers-color-scheme: dark) {
-    &:where(:root:not(.light), :root:not(.light) *) {
+    &:where([data-theme="system"], [data-theme="system"] *) {
       @slot;
     }
   }
@@ -63,80 +63,55 @@
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+/*
+ * Mode switch. Every color below is written ONCE as "light-value dark-value" using the
+ * space-toggle trick: the inactive mode's var() resolves to an empty value, the active
+ * one to its fallback (the color). Only the three rules at the end flip the switch.
+ */
 :root {
-  --background: #FFF7F9;
-  --surface: #FFFFFF;
-  --surface-alt: #FCEEF2;
-  --text: #3A2530;
-  --text-muted: #7A5D69;
-  --border: #F1D9E1;
-  --primary: #B9466E;
-  --primary-foreground: #FFFFFF;
-  --primary-soft: #F9D7E3;
-  /* accent/success/warning darkened from the brief to reach >= 4.5:1 */
-  --accent: #7054B2;
-  --accent-foreground: #FFFFFF;
-  --accent-soft: #E9E1F7;
-  --success: #2B745B;
-  --success-soft: #D9F0E6;
-  --warning: #9E6411;
-  --danger: #B23B3B;
+  --if-light: initial;
+  --if-dark: ;
+  color-scheme: light;
+
+  --background: var(--if-light, #FFF7F9) var(--if-dark, #1D1418);
+  --surface: var(--if-light, #FFFFFF) var(--if-dark, #271B21);
+  --surface-alt: var(--if-light, #FCEEF2) var(--if-dark, #31232A);
+  --text: var(--if-light, #3A2530) var(--if-dark, #F6E9EE);
+  --text-muted: var(--if-light, #7A5D69) var(--if-dark, #C6A9B5);
+  --border: var(--if-light, #F1D9E1) var(--if-dark, #3E2C34);
+  --primary: var(--if-light, #B9466E) var(--if-dark, #F08DB0);
+  --primary-foreground: var(--if-light, #FFFFFF) var(--if-dark, #2A1119);
+  --primary-soft: var(--if-light, #F9D7E3) var(--if-dark, #4A2533);
+  /* accent/success/warning (light) darkened from the brief to reach >= 4.5:1 */
+  --accent: var(--if-light, #7054B2) var(--if-dark, #B9A3EE);
+  --accent-foreground: var(--if-light, #FFFFFF) var(--if-dark, #1D1418);
+  --accent-soft: var(--if-light, #E9E1F7) var(--if-dark, #2F2645);
+  --success: var(--if-light, #2B745B) var(--if-dark, #7FD1B0);
+  --success-soft: var(--if-light, #D9F0E6) var(--if-dark, #1F3A30);
+  --warning: var(--if-light, #9E6411) var(--if-dark, #E3B25A);
+  --danger: var(--if-light, #B23B3B) var(--if-dark, #F08A8A);
+  --shadow-soft: var(--if-light, 0 6px 20px rgb(185 70 110 / 0.10))
+    var(--if-dark, 0 6px 20px rgb(0 0 0 / 0.35));
+  --scrim: var(--if-light, rgb(58 37 48 / 0.35)) var(--if-dark, rgb(0 0 0 / 0.6));
 
   --radius-sm: 12px;
   --radius: 18px;
   --radius-lg: 24px;
 
-  --shadow-soft: 0 6px 20px rgb(185 70 110 / 0.10);
-  --scrim: rgb(58 37 48 / 0.35);
-
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
-
-  color-scheme: light;
 }
 
-.dark {
-  --background: #1D1418;
-  --surface: #271B21;
-  --surface-alt: #31232A;
-  --text: #F6E9EE;
-  --text-muted: #C6A9B5;
-  --border: #3E2C34;
-  --primary: #F08DB0;
-  --primary-foreground: #2A1119;
-  --primary-soft: #4A2533;
-  --accent: #B9A3EE;
-  --accent-foreground: #1D1418;
-  --accent-soft: #2F2645;
-  --success: #7FD1B0;
-  --success-soft: #1F3A30;
-  --warning: #E3B25A;
-  --danger: #F08A8A;
-  --shadow-soft: 0 6px 20px rgb(0 0 0 / 0.35);
-  --scrim: rgb(0 0 0 / 0.6);
+:root[data-theme="dark"] {
+  --if-light: ;
+  --if-dark: initial;
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    --background: #1D1418;
-    --surface: #271B21;
-    --surface-alt: #31232A;
-    --text: #F6E9EE;
-    --text-muted: #C6A9B5;
-    --border: #3E2C34;
-    --primary: #F08DB0;
-    --primary-foreground: #2A1119;
-    --primary-soft: #4A2533;
-    --accent: #B9A3EE;
-    --accent-foreground: #1D1418;
-    --accent-soft: #2F2645;
-    --success: #7FD1B0;
-    --success-soft: #1F3A30;
-    --warning: #E3B25A;
-    --danger: #F08A8A;
-    --shadow-soft: 0 6px 20px rgb(0 0 0 / 0.35);
-    --scrim: rgb(0 0 0 / 0.6);
+  :root[data-theme="system"] {
+    --if-light: ;
+    --if-dark: initial;
     color-scheme: dark;
   }
 }

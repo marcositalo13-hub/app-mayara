@@ -31,3 +31,8 @@ export async function mockSetWater(fail: boolean, input: { ml: number }): Promis
 export async function mockSignOut(): Promise<void> {
   assertDev();
 }
+
+export async function mockNoop(): Promise<{ ok: true }> {
+  assertDev();
+  return { ok: true };
+}

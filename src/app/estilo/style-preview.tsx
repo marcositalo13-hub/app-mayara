@@ -88,14 +88,12 @@ export function StylePreview() {
   const celebrated = useRef(false);
 
   function toggleTheme() {
-    // Preview only: explicit class overrides the OS preference; not persisted.
+    // Preview only: flips the attribute for this page view; the real choice lives in the profile sheet.
     const root = document.documentElement;
     const isDark =
-      root.classList.contains("dark") ||
-      (!root.classList.contains("light") &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches);
-    root.classList.toggle("dark", !isDark);
-    root.classList.toggle("light", isDark);
+      root.dataset.theme === "dark" ||
+      (root.dataset.theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    root.dataset.theme = isDark ? "light" : "dark";
     setThemeVersion((v) => v + 1);
   }
 
