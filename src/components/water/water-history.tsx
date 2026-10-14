@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * Last 7 days as small bars: each = ml / that day's target (capped at 100%).
- * Days without a log keep the visible empty track. Fill moves by translateY, so the
+ * Days without a log show an empty outlined bar. Fill moves by translateY, so the
  * rounded top keeps its shape at any height.
  */
 export function WaterHistory({ days, fallbackGoalMl }: { days: WaterDay[]; fallbackGoalMl: number }) {
@@ -23,8 +23,10 @@ export function WaterHistory({ days, fallbackGoalMl }: { days: WaterDay[]; fallb
               role="img"
               aria-label={label}
               className={cn(
-                "relative h-24 w-full max-w-9 overflow-hidden rounded-full bg-surface-alt",
-                day.isToday && "ring-2 ring-primary/40",
+                "relative h-24 w-full max-w-9 overflow-hidden rounded-full",
+                // No log: empty outlined bar. Logged: soft track behind the fill.
+                day.ml === null ? "bg-transparent ring-1 ring-text-muted/40" : "bg-surface-alt",
+                day.isToday && "ring-2 ring-primary/50",
               )}
             >
               <div

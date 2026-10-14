@@ -51,7 +51,7 @@ export function WaterView({ data, setWater }: WaterViewProps) {
             {reached ? (
               <p className="inline-flex items-center gap-1.5 font-bold text-success">
                 <Check aria-hidden className="size-5" />
-                Meta do dia batida
+                Meta batida
               </p>
             ) : (
               <p className="text-text-muted tabular-nums">faltam {formatMl(remaining)} mL</p>

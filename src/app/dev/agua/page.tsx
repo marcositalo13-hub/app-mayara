@@ -7,7 +7,7 @@ import type { WaterData, WaterDay } from "@/lib/data/water";
 import { addDays } from "@/lib/date";
 import { mockSetWater } from "../hoje/mock-actions";
 
-// Dev-only preview of the Água tab: /dev/agua?data=demo|quase|acima|1500|vazio&fail=1
+// Dev-only preview of the Água tab: /dev/agua?data=demo|quase|acima|exato|3250|2500|vazio&fail=1
 
 type Ok = Extract<WaterData, { status: "ok" }>;
 const TODAY = "2026-10-14";
@@ -27,6 +27,8 @@ const FIXTURES: Record<string, Ok> = {
   quase: { status: "ok", today: TODAY, goalMl: 1500, waterMl: 1250, days: history([null, null, 1500, 1250, null, 1750, 1250], T) },
   acima: { status: "ok", today: TODAY, goalMl: 2500, waterMl: 3250, days: history([2000, 2500, 3000, 500, 2500, 2750, 3250], [2500, 2500, 2500, 2500, 2500, 2500, 2500]) },
   "2500": { status: "ok", today: TODAY, goalMl: 2500, waterMl: 1000, days: history([1500, null, 2500, 2250, 1000, 2500, 1000], [2000, 2000, 2500, 2500, 2500, 2500, 2500]) },
+  exato: { status: "ok", today: TODAY, goalMl: 2500, waterMl: 2500, days: history([2500, 2250, null, 2500, 1750, 2500, 2500], [2500, 2500, 2500, 2500, 2500, 2500, 2500]) },
+  "3250": { status: "ok", today: TODAY, goalMl: 2500, waterMl: 3200, days: history([2000, 2500, 3000, 500, 2500, 2750, 3200], [2500, 2500, 2500, 2500, 2500, 2500, 2500]) },
   vazio: { status: "ok", today: TODAY, goalMl: 1500, waterMl: 0, days: history([null, null, null, null, null, null, null], T) },
 };
 
